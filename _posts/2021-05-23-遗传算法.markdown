@@ -1,0 +1,417 @@
+---
+layout: post
+title: 遗传算法
+date: 2021-05-23 19:20:23 +0900
+category: algorithm
+---
+# 遗传算法（Genetic Algorithm）
+
+这是第一次接触遗传算法，是因为与同学参加数学建模的时候2021届中青杯数学建模的时候需要用到，所以现学现卖。
+
+## 个人理解
+
+根据个人理解，遗传算法和**梯度下降算法**一样属于一种优化算法。他的核心思想大致是：首先随机的生成一堆样本，这堆样本就当作是初始种群。然后我们需要自定义一个评估函数（也就是目标函数），计算种群中每个样本的得分，然后优胜劣汰，淘汰掉较差的样本，并使用交叉（也就是两个样本之间进行交叉）、变异（针对单个样本而言）不断产生新的样本，然后补充到种群里面去作为下一代的种群。个人感觉遗传算法其实是一种更先进的枚举方法，其实也是不断地去枚举数据，然后迭代试错，试出最优地样本。并且在具体操作过程中发现，种群越大，效果越好（可能是句废话，因为种群越大，说明覆盖地范围更广，更有可能包含最优地样本）。
+
+参考资料：
+
+[遗传算法地简答介绍以及python代码实现](https://finthon.com/python-genetic-algorithm/)
+
+[交叉算子](https://blog.csdn.net/hba646333407/article/details/103349279?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-4.control&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-4.control)
+
+
+
+本人地代码实现：
+
+```python
+class Gene:
+    def __init__(self,data,use,not_use):
+        store,work = self.create_store(data)
+        self.data = [store,work]
+        self.use = use
+        self.not_use = not_use
+        self.d_backup = data
+
+    def create_store(self,data):
+        store = []
+        work = []
+        for i in range(len(data)):
+            s_t = []
+            s_w = []
+            for j in range(len(data[i])):
+                tmp = data[i][j]
+                if j != 0:
+                    store_tmp = 24 if tmp % 24 == 0 else tmp % 24
+                    s_t.append(store_tmp)
+                    s_w.append(tmp)
+                else:
+                    s_t.append('B')
+                    s_w.append('D')
+            store.append(s_t)
+            work.append(s_w)
+        return store,work
+
+    def copy(self):
+        gen = Gene(self.d_backup,self.use,self.not_use)
+        return gen
+
+class TaskNode:
+    def __init__(self, time_list):
+        self.time_list = time_list
+        self.cur = 0
+
+    def step(self):
+        val = self.time_list[self.cur] if len(self.time_list) - 1 >= self.cur else -1
+        self.cur += 1
+        return val
+
+    def restore(self):
+        self.cur = 0
+
+class GenA:
+    def __init__(self,parameter,matrix,disB,task,car_num,disD,w1=100,w2=0,w3=0,v=5,t1=3,t2=3):
+        '''
+
+        :param parameter:
+        :param matrix:
+        :param disB:
+        :param task: [tuple(point,time)]
+        :param car_num:
+        '''
+        self.pop_size = parameter[0]
+        self.epoch = parameter[1]
+        self.CXPB = parameter[2]
+        self.MUTPB = parameter[3]
+        self.matrix = matrix
+        self.disB = disB
+        self.task = task
+        self.car_num = car_num
+        self.disD = disD
+        self.task_dic = {}
+        self.w1 = w1
+        self.w2 = w2
+        self.w3 = w3
+        self.v = v  # 拖车速度
+        self.t1 = t1  # 装货时间
+        self.t2 = t2  # 卸货时间
+
+        cycle_num = len(task) // (self.car_num * 4)
+        num_rest = car_num if (len(task) % (4*self.car_num)) > 0 else 0
+        self.car_num = self.car_num * (len(task)//(4*self.car_num)) + num_rest
+
+        pop = []
+
+        for p, t in task:
+            #points.append(p)
+            work_li = self.task_dic.get(p, [])
+            work_li.append(t)
+            self.task_dic[p] = work_li
+        for k in list(self.task_dic.keys()):
+            self.task_dic[k] = sorted(self.task_dic[k])
+            self.task_dic[k] = TaskNode(self.task_dic[k])
+
+        while len(pop) < self.pop_size:
+            plan = []
+            task_num = len(task)
+            points = []
+            for p, t in task:
+                points.append(p)
+            random.shuffle(points)
+            all_s = points
+            use = []
+            for j in range(self.car_num):
+                car_tmp = ['B']
+                #num = random.randint(0,min(len(points),4))
+                car_tmp.extend(points[0:4])
+                #use = use | set(points[0:num])
+                use.extend(points[0:4])
+                points = points[4:len(points)]
+                plan.append(car_tmp)
+            not_use = points
+            gene = Gene(plan,use,not_use)
+            if not self.check(gene):
+                print(self.check(gene))
+                continue
+
+            #test_gene = Gene([['B',31,32,28,27],['B',]],[],[])
+            #test_score = self.evaluate(test_gene)
+            score = self.evaluate(gene)
+            pop.append({'Gene':gene,'score':score})
+        self.pop = pop
+        self.bestindividual = self.selectBest(self.pop)
+
+    def evaluate(self,gene,is_hard=True):
+        D_R = 0  # 计算总取货路程
+        D_P = 0  # 计算总送货路程
+        T_w = 0  # 计算总早到时间
+        T_p = 0  # 计算总晚到时间
+        # 对拖车遍历
+        # print(gene)
+        for k in range(len(gene.data[0])):
+            # 获取经过的仓储位
+            k_r = gene.data[0][k]
+            if len(k_r) == 1:
+                continue
+            # 该拖车取货路程
+            d_r = 0
+            # 对该车仓储位点遍历
+            n_k_r = ['B']
+            tmp_k_r = k_r[1:len(k_r)]
+            random.shuffle(tmp_k_r)
+            n_k_r.extend(tmp_k_r)
+            k_r = n_k_r
+            for r in range(len(k_r) - 1):
+                # 如果是B点
+                if isinstance(k_r[r], str):
+                    d_r += self.disB[k_r[r + 1]]
+                # 如果非B点
+                else:
+                    d_r += self.matrix[k_r[r]][k_r[r + 1]]
+            # 最后的点与D点的距离
+            d_r += self.disD[k_r[-1]]
+            D_R += d_r
+            # 取货时间
+            t_current = d_r / self.v + (len(k_r) - 1) * self.t1
+            # 获取经过的工位
+            k_p = gene.data[1][k]
+
+            n_k_p = ['D']
+            tmp_k_p = k_p[1:len(k_p)]
+            random.shuffle(tmp_k_p)
+            n_k_p.extend(tmp_k_p)
+            k_p = n_k_p
+            # 对点遍历
+            for p in range(len(k_p) - 1):
+                # 如果是D点
+                if isinstance(k_p[p], str):
+                    D_P += self.disD[k_p[p + 1]]
+                    t_current += self.disD[k_p[p + 1]] / self.v
+                # 如果是工位
+                else:
+                    D_P += self.matrix[k_p[p]][k_p[p + 1]]
+                    t_current += self.matrix[k_p[p]][k_p[p + 1]] / self.v
+                # 获取任务需求时间
+                req_time = self.task_dic[k_p[p + 1]].step()
+                # 早到
+                if t_current < req_time:
+                    T_w += (req_time - t_current)
+                    t_current = req_time + self.t2
+                # 晚到
+                elif t_current > req_time:
+                    T_p += (t_current - req_time)
+                    t_current = t_current + self.t2
+                    if is_hard:
+                        return float("inf")
+            # 最后的点与D的距离
+            D_P += self.disD[k_p[-1]]
+        for key in self.task_dic.keys():
+            self.task_dic[key].restore()
+        cost = self.w1 * (D_R + D_P) + self.w2 * T_w + self.w3 * T_p
+        return cost
+
+    def selectBest(self,pop):
+        s_inds = sorted(pop, key=itemgetter("score"))  # from large to small, return a pop
+        return s_inds[0]
+
+    def check(self,gene: Gene):
+        '''
+        验证是否满足约束条件
+        :param gene:
+        :return:
+        '''
+        # 6.4
+        for k_data in gene.data[0]:
+            if len(k_data) - 1 > len(task) or len(k_data) - 1 < 0:
+                print('6.4')
+                return False
+        # 6.5
+        N = 0
+        for k_data in gene.data[0]:
+            N += (len(k_data) - 1)
+        if N != len(task):
+            print('6.5')
+            return False
+        # 6.6 and 6.7
+        # for k in range(len(gene.data[0])):
+        #     # 获取k经过的仓储位
+        #     k_r = gene.data[0][k]
+        #     # 获取k经过的工位
+        #     k_p = gene.data[1][k]
+        #     for o_k in range(len(gene.data[0])):
+        #         # 获取o_k经过的仓储位
+        #         o_r = gene.data[0][o_k]
+        #         # 获取o_k经过的工位
+        #         o_p = gene.data[1][o_k]
+        #         set(o_r)
+        # 6.10
+        def id(no):
+            return no % 24
+        for k in range(len(gene.data[0])):
+            # 获取k经过的仓储位
+            k_r = gene.data[0][k]
+            # 获取k经过的工位
+            k_p = gene.data[1][k]
+            for i in range(1, len(k_r)):
+                ok = False
+                for j in range(1, len(k_p)):
+                    if id(k_r[i]) == id(k_p[j]):
+                        ok = True
+                        break
+                if not ok:
+                    print('6.10')
+                    return False
+        return True
+
+    def selection(self,individuals,k):
+        s_inds = sorted(individuals,key=itemgetter('score'))
+
+        sum_fits = sum(ind['score'] for ind in individuals)
+
+        chosen = []
+        for i in range(k):
+            u = random.random() * sum_fits
+            sum_ = 0
+            for ind in s_inds:
+                if not self.check(ind['Gene']):
+                    continue
+                sum_ += ind['score']
+                if sum_ <= u:
+                    chosen.append(ind)
+                    s_inds.pop(0)
+                    break
+        chosen = sorted(chosen,key=itemgetter('score'))
+        return chosen
+
+    def crossoperate(self,offspring):
+        spring1 = offspring[0]['Gene']
+        spring2 = offspring[1]['Gene']
+
+        car_num1 = len(spring1.data[0])
+        car_num2 = len(spring2.data[0])
+
+        car1 = random.randint(0,car_num1-1)
+        car1_num = len(spring1.data[0][car1])
+
+        if car1_num >=3:
+            pos = random.randint(1,car1_num-2)
+            s_task_id = spring1.data[0][car1][pos:pos+2]
+            w_task_id = spring1.data[1][car1][pos:pos+2]
+
+            loc = []
+            s = set()
+            for i in range(car_num2):
+                work_list = spring2.data[1][i]
+                for j,w_i in enumerate(work_list):
+                    if w_i in w_task_id and w_i not in s:
+                        loc.append((i,j))
+                        s.add(w_i)
+
+            cur1 = pos
+            task_cur = 0
+            for car_id,work_id in loc:
+                spring1.data[0][car1][cur1] = spring2.data[0][car_id][work_id]
+                spring1.data[1][car1][cur1] = spring2.data[1][car_id][work_id]
+
+                spring2.data[0][car_id][work_id] = s_task_id[task_cur]
+                spring2.data[1][car_id][work_id] = w_task_id[task_cur]
+
+                cur1 += 1
+                task_cur += 1
+
+        return spring1,spring2
+
+    def mutation(self,crossoff):
+        muteoff = crossoff
+        car_num = len(crossoff.data[0])
+
+        car1 = random.randint(0, car_num - 1)
+        car2 = random.randint(0, car_num - 1)
+
+        if len(muteoff.data[0][car1]) > 1 and len(muteoff.data[0][car2]) > 1:  # 两辆车之间的交换
+            pos1 = random.randint(1, len(muteoff.data[0][car1]) - 1)
+            pos2 = random.randint(1, len(muteoff.data[0][car2]) - 1)
+
+            tmp_s = muteoff.data[0][car1][pos1]
+            tmp_w = muteoff.data[1][car1][pos1]
+
+            muteoff.data[0][car1][pos1] = muteoff.data[0][car2][pos2]
+            muteoff.data[1][car1][pos1] = muteoff.data[1][car2][pos2]
+
+            muteoff.data[0][car2][pos2] = tmp_s
+            muteoff.data[1][car2][pos2] = tmp_w
+        elif len(muteoff.data[0][car1]) > 1 or len(muteoff.data[0][car2]) > 1:  # 多的车向少的车变换
+            car_more = car1 if len(muteoff.data[0][car1]) > 1 else car2
+            car_less = car1 + car2 - car_more
+
+            pos = random.randint(1, len(muteoff.data[0][car_more]) - 1)
+            tmp_s = muteoff.data[0][car_more][pos]
+            tmp_w = muteoff.data[1][car_more][pos]
+
+            muteoff.data[0][car_more].pop(pos)
+            muteoff.data[1][car_more].pop(pos)
+
+            muteoff.data[0][car_less].append(tmp_s)
+            muteoff.data[1][car_less].append(tmp_w)
+
+        if 0 <= random.random() <= 0.5:
+            car3 = random.randint(0, car_num - 1)
+            if len(muteoff.data[0][car3]) >= 3:
+                pos1 = random.randint(1, len(muteoff.data[0][car3]) - 1)
+                pos2 = random.randint(1, len(muteoff.data[0][car3]) - 1)
+
+                tmp_s = muteoff.data[0][car3][pos1]
+                tmp_w = muteoff.data[1][car3][pos1]
+
+                muteoff.data[0][car3][pos1] = muteoff.data[0][car3][pos2]
+                muteoff.data[1][car3][pos1] = muteoff.data[1][car3][pos2]
+
+                muteoff.data[0][car3][pos2] = tmp_s
+                muteoff.data[1][car3][pos2] = tmp_w
+
+        return muteoff
+
+
+
+    def GA_main(self,select_num = 100):
+
+        popsize = self.pop_size
+        for step in range(self.epoch):
+
+            selectpop = self.selection(self.pop,select_num)
+
+            nextoff = []
+            while len(nextoff) != popsize:
+                if len(selectpop) <2:
+                    break
+                offspring = [selectpop.pop() for _ in range(2)]
+
+                if random.random() < self.CXPB:
+                    crossoff1, crossoff2 = self.crossoperate(offspring)
+                    if random.random() < self.MUTPB:
+                        muteoff1 = self.mutation(crossoff1)
+                        muteoff2 = self.mutation(crossoff2)
+                        fit_muteoff1 = self.evaluate(muteoff1)
+                        fit_muteoff2 = self.evaluate(muteoff2)
+                        nextoff.append({'Gene':muteoff1,'score':fit_muteoff1})
+                        nextoff.append({'Gene': muteoff2, 'score': fit_muteoff2})
+                    else:
+                        fit_crossoff1 = self.evaluate(crossoff1)
+                        fit_crossoff2 = self.evaluate(crossoff2)
+                        nextoff.append({'Gene': crossoff1, 'score': fit_crossoff1})
+                        nextoff.append({'Gene': crossoff2, 'score': fit_crossoff2})
+                else:
+                    nextoff.extend(offspring)
+            self.pop = nextoff
+
+            fits = [ind['score'] for ind in self.pop]
+
+            best_ind = self.selectBest(self.pop)
+
+            if best_ind['score'] < self.bestindividual['score']:
+                self.bestindividual['score'] = best_ind['score']
+                self.bestindividual['Gene'] = best_ind['Gene'].copy()
+
+            print("Best individual found is {}, {}".format(self.bestindividual['Gene'].data,
+                                                           self.bestindividual['score']))
+            print("  Min fitness of current pop: {}".format(min(fits)))
+```
+
