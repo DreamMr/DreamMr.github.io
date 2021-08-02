@@ -1,0 +1,44 @@
+---
+layout: post
+title: 广义拉格朗日极小极大问题
+date: 2020-01-02 19:20:23 +0900
+category: math
+---
+# post-sample
+# 广义拉格朗日极小极大问题
+
+对于约束最优化问题：
+$$
+min_{x\in R^n} f(x)
+\\
+s.t. c_i(x)\leq0,\ i=1,2,...,k \\
+h_i(x)=0,j=1,2,...,l
+$$
+构造拉格朗日函数：
+$$
+L(x,\alpha,\beta)=f(x)+\sum_{i=1}^k\alpha_ic_i(x)+\sum_{j=1}^l\beta_jh_j(x)\\
+\alpha\ \beta是拉格朗日乘子，\alpha_i\geq0(表明\bigtriangledown f和  \bigtriangledown c的方向相反)
+$$
+可以设计函数：
+$$
+max_{\alpha,\beta;\alpha_i\ge0}L(x,\alpha,\beta)
+$$
+
+
+- 当某个$c_i(x)>0$时，取i对应的$\alpha_i\rightarrow +\infty$，则可使上式为$+\infty$
+
+- 当某个$h_i(x)\neq0$,取j对应的$\beta_j\to +\infty$，则可使上式为$+\infty$
+
+- 当x满足原始问题的约束条件时，这个函数等价于$f(x)$
+
+  - 当x满足约束条件时，显然$h_i(x)=0$
+  - 又由于$\alpha_i\ge0 \ and\ c_i(x)\le0$，所以求max的话$\alpha_ic_i(x)=0$
+
+  因此只剩第一项$f(x)$
+
+因此为了最小化$f(x)$有：
+$$
+min_xmax_{\alpha,\beta;\alpha_i\ge0}L(x,\alpha,\beta)
+$$
+
+
