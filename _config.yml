@@ -1,6 +1,6 @@
 # Site settings
 title: wwb个人主页
-baseurl: "/wwb"
+baseurl: 
 url: "https://github.com/DreamMr"
 google_analytics: # Tracking ID, e.g. "UA-000000-01"
 
