@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>wwb个人主页</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/wwb/assets/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="/wwb/assets/css/fontawesome-all.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/wwb/assets/favicon.ico">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/wwb/">
+          <h2 class="nav-title">wwb个人主页</h2>
+        </a>
+        <ul>
+          <li><a href="/wwb/">About</a></li>
+          <li><a href="/wwb/portfolio/">Portfolio</a></li>
+        </ul>
+    </div>
+  </nav>
+
+    <main>
+      <div class="post">
+  <h2 class="post-title">遗传算法</h2>
+  <div class="post-line"></div>
+
+  <h1 id="遗传算法genetic-algorithm">遗传算法（Genetic Algorithm）</h1>
+
+<p>这是第一次接触遗传算法，是因为与同学参加数学建模的时候2021届中青杯数学建模的时候需要用到，所以现学现卖。</p>
+
+<h2 id="个人理解">个人理解</h2>
+
+<p>根据个人理解，遗传算法和<strong>梯度下降算法</strong>一样属于一种优化算法。他的核心思想大致是：首先随机的生成一堆样本，这堆样本就当作是初始种群。然后我们需要自定义一个评估函数（也就是目标函数），计算种群中每个样本的得分，然后优胜劣汰，淘汰掉较差的样本，并使用交叉（也就是两个样本之间进行交叉）、变异（针对单个样本而言）不断产生新的样本，然后补充到种群里面去作为下一代的种群。个人感觉遗传算法其实是一种更先进的枚举方法，其实也是不断地去枚举数据，然后迭代试错，试出最优地样本。并且在具体操作过程中发现，种群越大，效果越好（可能是句废话，因为种群越大，说明覆盖地范围更广，更有可能包含最优地样本）。</p>
+
+<p>参考资料：</p>
+
+<p><a href="https://finthon.com/python-genetic-algorithm/">遗传算法地简答介绍以及python代码实现</a></p>
+
+<p><a href="https://blog.csdn.net/hba646333407/article/details/103349279?utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-4.control&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromMachineLearnPai2%7Edefault-4.control">交叉算子</a></p>
+
+<p>本人地代码实现：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Gene</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">use</span><span class="p">,</span><span class="n">not_use</span><span class="p">):</span>
+        <span class="n">store</span><span class="p">,</span><span class="n">work</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">create_store</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">store</span><span class="p">,</span><span class="n">work</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">use</span> <span class="o">=</span> <span class="n">use</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">not_use</span> <span class="o">=</span> <span class="n">not_use</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">d_backup</span> <span class="o">=</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">create_store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">work</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+            <span class="n">s_t</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">s_w</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">store_tmp</span> <span class="o">=</span> <span class="mi">24</span> <span class="k">if</span> <span class="n">tmp</span> <span class="o">%</span> <span class="mi">24</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">tmp</span> <span class="o">%</span> <span class="mi">24</span>
+                    <span class="n">s_t</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">store_tmp</span><span class="p">)</span>
+                    <span class="n">s_w</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">s_t</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'B'</span><span class="p">)</span>
+                    <span class="n">s_w</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="s">'D'</span><span class="p">)</span>
+            <span class="n">store</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">s_t</span><span class="p">)</span>
+            <span class="n">work</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">s_w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">store</span><span class="p">,</span><span class="n">work</span>
+
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">Gene</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">d_backup</span><span class="p">,</span><span class="bp">self</span><span class="p">.</span><span class="n">use</span><span class="p">,</span><span class="bp">self</span><span class="p">.</span><span class="n">not_use</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gen</span>
+
+<span class="k">class</span> <span class="nc">TaskNode</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_list</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">time_list</span> <span class="o">=</span> <span class="n">time_list</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">time_list</span><span class="p">[</span><span class="bp">self</span><span class="p">.</span><span class="n">cur</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">time_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">val</span>
+
+    <span class="k">def</span> <span class="nf">restore</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">class</span> <span class="nc">GenA</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameter</span><span class="p">,</span><span class="n">matrix</span><span class="p">,</span><span class="n">disB</span><span class="p">,</span><span class="n">task</span><span class="p">,</span><span class="n">car_num</span><span class="p">,</span><span class="n">disD</span><span class="p">,</span><span class="n">w1</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">w2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">w3</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">v</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">t1</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">t2</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="s">'''
+
+        :param parameter:
+        :param matrix:
+        :param disB:
+        :param task: [tuple(point,time)]
+        :param car_num:
+        '''</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">pop_size</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">epoch</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">CXPB</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">MUTPB</span> <span class="o">=</span> <span class="n">parameter</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">matrix</span> <span class="o">=</span> <span class="n">matrix</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">disB</span> <span class="o">=</span> <span class="n">disB</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">task</span> <span class="o">=</span> <span class="n">task</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">car_num</span> <span class="o">=</span> <span class="n">car_num</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">disD</span> <span class="o">=</span> <span class="n">disD</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">w1</span> <span class="o">=</span> <span class="n">w1</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">w2</span> <span class="o">=</span> <span class="n">w2</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">w3</span> <span class="o">=</span> <span class="n">w3</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span>  <span class="c1"># 拖车速度
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">t1</span> <span class="o">=</span> <span class="n">t1</span>  <span class="c1"># 装货时间
+</span>        <span class="bp">self</span><span class="p">.</span><span class="n">t2</span> <span class="o">=</span> <span class="n">t2</span>  <span class="c1"># 卸货时间
+</span>
+        <span class="n">cycle_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">car_num</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">num_rest</span> <span class="o">=</span> <span class="n">car_num</span> <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="p">.</span><span class="n">car_num</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">car_num</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">car_num</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">)</span><span class="o">//</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="p">.</span><span class="n">car_num</span><span class="p">))</span> <span class="o">+</span> <span class="n">num_rest</span>
+
+        <span class="n">pop</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">task</span><span class="p">:</span>
+            <span class="c1">#points.append(p)
+</span>            <span class="n">work_li</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">work_li</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">work_li</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">TaskNode</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">.</span><span class="n">pop_size</span><span class="p">:</span>
+            <span class="n">plan</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">task_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">task</span><span class="p">:</span>
+                <span class="n">points</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">random</span><span class="p">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">all_s</span> <span class="o">=</span> <span class="n">points</span>
+            <span class="n">use</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">car_num</span><span class="p">):</span>
+                <span class="n">car_tmp</span> <span class="o">=</span> <span class="p">[</span><span class="s">'B'</span><span class="p">]</span>
+                <span class="c1">#num = random.randint(0,min(len(points),4))
+</span>                <span class="n">car_tmp</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="c1">#use = use | set(points[0:num])
+</span>                <span class="n">use</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+                <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)]</span>
+                <span class="n">plan</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">car_tmp</span><span class="p">)</span>
+            <span class="n">not_use</span> <span class="o">=</span> <span class="n">points</span>
+            <span class="n">gene</span> <span class="o">=</span> <span class="n">Gene</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span><span class="n">use</span><span class="p">,</span><span class="n">not_use</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">.</span><span class="n">check</span><span class="p">(</span><span class="n">gene</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">check</span><span class="p">(</span><span class="n">gene</span><span class="p">))</span>
+                <span class="k">continue</span>
+
+            <span class="c1">#test_gene = Gene([['B',31,32,28,27],['B',]],[],[])
+</span>            <span class="c1">#test_score = self.evaluate(test_gene)
+</span>            <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+            <span class="n">pop</span><span class="p">.</span><span class="n">append</span><span class="p">({</span><span class="s">'Gene'</span><span class="p">:</span><span class="n">gene</span><span class="p">,</span><span class="s">'score'</span><span class="p">:</span><span class="n">score</span><span class="p">})</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">pop</span> <span class="o">=</span> <span class="n">pop</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">selectBest</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">pop</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">gene</span><span class="p">,</span><span class="n">is_hard</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">D_R</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 计算总取货路程
+</span>        <span class="n">D_P</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 计算总送货路程
+</span>        <span class="n">T_w</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 计算总早到时间
+</span>        <span class="n">T_p</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 计算总晚到时间
+</span>        <span class="c1"># 对拖车遍历
+</span>        <span class="c1"># print(gene)
+</span>        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="c1"># 获取经过的仓储位
+</span>            <span class="n">k_r</span> <span class="o">=</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_r</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># 该拖车取货路程
+</span>            <span class="n">d_r</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="c1"># 对该车仓储位点遍历
+</span>            <span class="n">n_k_r</span> <span class="o">=</span> <span class="p">[</span><span class="s">'B'</span><span class="p">]</span>
+            <span class="n">tmp_k_r</span> <span class="o">=</span> <span class="n">k_r</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">k_r</span><span class="p">)]</span>
+            <span class="n">random</span><span class="p">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">tmp_k_r</span><span class="p">)</span>
+            <span class="n">n_k_r</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmp_k_r</span><span class="p">)</span>
+            <span class="n">k_r</span> <span class="o">=</span> <span class="n">n_k_r</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k_r</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># 如果是B点
+</span>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_r</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">d_r</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">disB</span><span class="p">[</span><span class="n">k_r</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                <span class="c1"># 如果非B点
+</span>                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d_r</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">k_r</span><span class="p">[</span><span class="n">r</span><span class="p">]][</span><span class="n">k_r</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="c1"># 最后的点与D点的距离
+</span>            <span class="n">d_r</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">disD</span><span class="p">[</span><span class="n">k_r</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">D_R</span> <span class="o">+=</span> <span class="n">d_r</span>
+            <span class="c1"># 取货时间
+</span>            <span class="n">t_current</span> <span class="o">=</span> <span class="n">d_r</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">v</span> <span class="o">+</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k_r</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="p">.</span><span class="n">t1</span>
+            <span class="c1"># 获取经过的工位
+</span>            <span class="n">k_p</span> <span class="o">=</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+
+            <span class="n">n_k_p</span> <span class="o">=</span> <span class="p">[</span><span class="s">'D'</span><span class="p">]</span>
+            <span class="n">tmp_k_p</span> <span class="o">=</span> <span class="n">k_p</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">k_p</span><span class="p">)]</span>
+            <span class="n">random</span><span class="p">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">tmp_k_p</span><span class="p">)</span>
+            <span class="n">n_k_p</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmp_k_p</span><span class="p">)</span>
+            <span class="n">k_p</span> <span class="o">=</span> <span class="n">n_k_p</span>
+            <span class="c1"># 对点遍历
+</span>            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k_p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># 如果是D点
+</span>                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="n">D_P</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">disD</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                    <span class="n">t_current</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">disD</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">v</span>
+                <span class="c1"># 如果是工位
+</span>                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">D_P</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span><span class="p">]][</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                    <span class="n">t_current</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span><span class="p">]][</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">/</span> <span class="bp">self</span><span class="p">.</span><span class="n">v</span>
+                <span class="c1"># 获取任务需求时间
+</span>                <span class="n">req_time</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]].</span><span class="n">step</span><span class="p">()</span>
+                <span class="c1"># 早到
+</span>                <span class="k">if</span> <span class="n">t_current</span> <span class="o">&lt;</span> <span class="n">req_time</span><span class="p">:</span>
+                    <span class="n">T_w</span> <span class="o">+=</span> <span class="p">(</span><span class="n">req_time</span> <span class="o">-</span> <span class="n">t_current</span><span class="p">)</span>
+                    <span class="n">t_current</span> <span class="o">=</span> <span class="n">req_time</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">t2</span>
+                <span class="c1"># 晚到
+</span>                <span class="k">elif</span> <span class="n">t_current</span> <span class="o">&gt;</span> <span class="n">req_time</span><span class="p">:</span>
+                    <span class="n">T_p</span> <span class="o">+=</span> <span class="p">(</span><span class="n">t_current</span> <span class="o">-</span> <span class="n">req_time</span><span class="p">)</span>
+                    <span class="n">t_current</span> <span class="o">=</span> <span class="n">t_current</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">t2</span>
+                    <span class="k">if</span> <span class="n">is_hard</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s">"inf"</span><span class="p">)</span>
+            <span class="c1"># 最后的点与D的距离
+</span>            <span class="n">D_P</span> <span class="o">+=</span> <span class="bp">self</span><span class="p">.</span><span class="n">disD</span><span class="p">[</span><span class="n">k_p</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">task_dic</span><span class="p">[</span><span class="n">key</span><span class="p">].</span><span class="n">restore</span><span class="p">()</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">w1</span> <span class="o">*</span> <span class="p">(</span><span class="n">D_R</span> <span class="o">+</span> <span class="n">D_P</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">w2</span> <span class="o">*</span> <span class="n">T_w</span> <span class="o">+</span> <span class="bp">self</span><span class="p">.</span><span class="n">w3</span> <span class="o">*</span> <span class="n">T_p</span>
+        <span class="k">return</span> <span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">selectBest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pop</span><span class="p">):</span>
+        <span class="n">s_inds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pop</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="s">"score"</span><span class="p">))</span>  <span class="c1"># from large to small, return a pop
+</span>        <span class="k">return</span> <span class="n">s_inds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">gene</span><span class="p">:</span> <span class="n">Gene</span><span class="p">):</span>
+        <span class="s">'''
+        验证是否满足约束条件
+        :param gene:
+        :return:
+        '''</span>
+        <span class="c1"># 6.4
+</span>        <span class="k">for</span> <span class="n">k_data</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="s">'6.4'</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">False</span>
+        <span class="c1"># 6.5
+</span>        <span class="n">N</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">k_data</span> <span class="ow">in</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">N</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k_data</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">N</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">'6.5'</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="c1"># 6.6 and 6.7
+</span>        <span class="c1"># for k in range(len(gene.data[0])):
+</span>        <span class="c1">#     # 获取k经过的仓储位
+</span>        <span class="c1">#     k_r = gene.data[0][k]
+</span>        <span class="c1">#     # 获取k经过的工位
+</span>        <span class="c1">#     k_p = gene.data[1][k]
+</span>        <span class="c1">#     for o_k in range(len(gene.data[0])):
+</span>        <span class="c1">#         # 获取o_k经过的仓储位
+</span>        <span class="c1">#         o_r = gene.data[0][o_k]
+</span>        <span class="c1">#         # 获取o_k经过的工位
+</span>        <span class="c1">#         o_p = gene.data[1][o_k]
+</span>        <span class="c1">#         set(o_r)
+</span>        <span class="c1"># 6.10
+</span>        <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="n">no</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">no</span> <span class="o">%</span> <span class="mi">24</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
+            <span class="c1"># 获取k经过的仓储位
+</span>            <span class="n">k_r</span> <span class="o">=</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+            <span class="c1"># 获取k经过的工位
+</span>            <span class="n">k_p</span> <span class="o">=</span> <span class="n">gene</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_r</span><span class="p">)):</span>
+                <span class="n">ok</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">k_p</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="nb">id</span><span class="p">(</span><span class="n">k_r</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">==</span> <span class="nb">id</span><span class="p">(</span><span class="n">k_p</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                        <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                    <span class="k">print</span><span class="p">(</span><span class="s">'6.10'</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">individuals</span><span class="p">,</span><span class="n">k</span><span class="p">):</span>
+        <span class="n">s_inds</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">individuals</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="s">'score'</span><span class="p">))</span>
+
+        <span class="n">sum_fits</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">individuals</span><span class="p">)</span>
+
+        <span class="n">chosen</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="n">sum_fits</span>
+            <span class="n">sum_</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">s_inds</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">.</span><span class="n">check</span><span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="s">'Gene'</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="n">sum_</span> <span class="o">+=</span> <span class="n">ind</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">sum_</span> <span class="o">&lt;=</span> <span class="n">u</span><span class="p">:</span>
+                    <span class="n">chosen</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+                    <span class="n">s_inds</span><span class="p">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="k">break</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chosen</span><span class="p">,</span><span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="s">'score'</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">chosen</span>
+
+    <span class="k">def</span> <span class="nf">crossoperate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">offspring</span><span class="p">):</span>
+        <span class="n">spring1</span> <span class="o">=</span> <span class="n">offspring</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">'Gene'</span><span class="p">]</span>
+        <span class="n">spring2</span> <span class="o">=</span> <span class="n">offspring</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s">'Gene'</span><span class="p">]</span>
+
+        <span class="n">car_num1</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">car_num2</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">car1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">car_num1</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">car1_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">car1_num</span> <span class="o">&gt;=</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">car1_num</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">s_task_id</span> <span class="o">=</span> <span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">w_task_id</span> <span class="o">=</span> <span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos</span><span class="p">:</span><span class="n">pos</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+
+            <span class="n">loc</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">car_num2</span><span class="p">):</span>
+                <span class="n">work_list</span> <span class="o">=</span> <span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">w_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">work_list</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">w_i</span> <span class="ow">in</span> <span class="n">w_task_id</span> <span class="ow">and</span> <span class="n">w_i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+                        <span class="n">loc</span><span class="p">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">))</span>
+                        <span class="n">s</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">w_i</span><span class="p">)</span>
+
+            <span class="n">cur1</span> <span class="o">=</span> <span class="n">pos</span>
+            <span class="n">task_cur</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">car_id</span><span class="p">,</span><span class="n">work_id</span> <span class="ow">in</span> <span class="n">loc</span><span class="p">:</span>
+                <span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">cur1</span><span class="p">]</span> <span class="o">=</span> <span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_id</span><span class="p">][</span><span class="n">work_id</span><span class="p">]</span>
+                <span class="n">spring1</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">cur1</span><span class="p">]</span> <span class="o">=</span> <span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car_id</span><span class="p">][</span><span class="n">work_id</span><span class="p">]</span>
+
+                <span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_id</span><span class="p">][</span><span class="n">work_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_task_id</span><span class="p">[</span><span class="n">task_cur</span><span class="p">]</span>
+                <span class="n">spring2</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car_id</span><span class="p">][</span><span class="n">work_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">w_task_id</span><span class="p">[</span><span class="n">task_cur</span><span class="p">]</span>
+
+                <span class="n">cur1</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">task_cur</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">spring1</span><span class="p">,</span><span class="n">spring2</span>
+
+    <span class="k">def</span> <span class="nf">mutation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">crossoff</span><span class="p">):</span>
+        <span class="n">muteoff</span> <span class="o">=</span> <span class="n">crossoff</span>
+        <span class="n">car_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">crossoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">car1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">car_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">car2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">car_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 两辆车之间的交换
+</span>            <span class="n">pos1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">pos2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car2</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">tmp_s</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span>
+            <span class="n">tmp_w</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span>
+
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car2</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span>
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car1</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car2</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span>
+
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car2</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_s</span>
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car2</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_w</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># 多的车向少的车变换
+</span>            <span class="n">car_more</span> <span class="o">=</span> <span class="n">car1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">car2</span>
+            <span class="n">car_less</span> <span class="o">=</span> <span class="n">car1</span> <span class="o">+</span> <span class="n">car2</span> <span class="o">-</span> <span class="n">car_more</span>
+
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_more</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">tmp_s</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_more</span><span class="p">][</span><span class="n">pos</span><span class="p">]</span>
+            <span class="n">tmp_w</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car_more</span><span class="p">][</span><span class="n">pos</span><span class="p">]</span>
+
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_more</span><span class="p">].</span><span class="n">pop</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car_more</span><span class="p">].</span><span class="n">pop</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car_less</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_s</span><span class="p">)</span>
+            <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car_less</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_w</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="p">:</span>
+            <span class="n">car3</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">car_num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">pos1</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">pos2</span> <span class="o">=</span> <span class="n">random</span><span class="p">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">tmp_s</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span>
+                <span class="n">tmp_w</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span>
+
+                <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span>
+                <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos1</span><span class="p">]</span> <span class="o">=</span> <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span>
+
+                <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_s</span>
+                <span class="n">muteoff</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">car3</span><span class="p">][</span><span class="n">pos2</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp_w</span>
+
+        <span class="k">return</span> <span class="n">muteoff</span>
+
+
+
+    <span class="k">def</span> <span class="nf">GA_main</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">select_num</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+
+        <span class="n">popsize</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">pop_size</span>
+        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">epoch</span><span class="p">):</span>
+
+            <span class="n">selectpop</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">selection</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">pop</span><span class="p">,</span><span class="n">select_num</span><span class="p">)</span>
+
+            <span class="n">nextoff</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">nextoff</span><span class="p">)</span> <span class="o">!=</span> <span class="n">popsize</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">selectpop</span><span class="p">)</span> <span class="o">&lt;</span><span class="mi">2</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">offspring</span> <span class="o">=</span> <span class="p">[</span><span class="n">selectpop</span><span class="p">.</span><span class="n">pop</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)]</span>
+
+                <span class="k">if</span> <span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">.</span><span class="n">CXPB</span><span class="p">:</span>
+                    <span class="n">crossoff1</span><span class="p">,</span> <span class="n">crossoff2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">crossoperate</span><span class="p">(</span><span class="n">offspring</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">random</span><span class="p">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">.</span><span class="n">MUTPB</span><span class="p">:</span>
+                        <span class="n">muteoff1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">mutation</span><span class="p">(</span><span class="n">crossoff1</span><span class="p">)</span>
+                        <span class="n">muteoff2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">mutation</span><span class="p">(</span><span class="n">crossoff2</span><span class="p">)</span>
+                        <span class="n">fit_muteoff1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">muteoff1</span><span class="p">)</span>
+                        <span class="n">fit_muteoff2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">muteoff2</span><span class="p">)</span>
+                        <span class="n">nextoff</span><span class="p">.</span><span class="n">append</span><span class="p">({</span><span class="s">'Gene'</span><span class="p">:</span><span class="n">muteoff1</span><span class="p">,</span><span class="s">'score'</span><span class="p">:</span><span class="n">fit_muteoff1</span><span class="p">})</span>
+                        <span class="n">nextoff</span><span class="p">.</span><span class="n">append</span><span class="p">({</span><span class="s">'Gene'</span><span class="p">:</span> <span class="n">muteoff2</span><span class="p">,</span> <span class="s">'score'</span><span class="p">:</span> <span class="n">fit_muteoff2</span><span class="p">})</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fit_crossoff1</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">crossoff1</span><span class="p">)</span>
+                        <span class="n">fit_crossoff2</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">crossoff2</span><span class="p">)</span>
+                        <span class="n">nextoff</span><span class="p">.</span><span class="n">append</span><span class="p">({</span><span class="s">'Gene'</span><span class="p">:</span> <span class="n">crossoff1</span><span class="p">,</span> <span class="s">'score'</span><span class="p">:</span> <span class="n">fit_crossoff1</span><span class="p">})</span>
+                        <span class="n">nextoff</span><span class="p">.</span><span class="n">append</span><span class="p">({</span><span class="s">'Gene'</span><span class="p">:</span> <span class="n">crossoff2</span><span class="p">,</span> <span class="s">'score'</span><span class="p">:</span> <span class="n">fit_crossoff2</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">nextoff</span><span class="p">.</span><span class="n">extend</span><span class="p">(</span><span class="n">offspring</span><span class="p">)</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">pop</span> <span class="o">=</span> <span class="n">nextoff</span>
+
+            <span class="n">fits</span> <span class="o">=</span> <span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span> <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">pop</span><span class="p">]</span>
+
+            <span class="n">best_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">selectBest</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">pop</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">best_ind</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span><span class="p">[</span><span class="s">'score'</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_ind</span><span class="p">[</span><span class="s">'score'</span><span class="p">]</span>
+                <span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span><span class="p">[</span><span class="s">'Gene'</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_ind</span><span class="p">[</span><span class="s">'Gene'</span><span class="p">].</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="k">print</span><span class="p">(</span><span class="s">"Best individual found is {}, {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span><span class="p">[</span><span class="s">'Gene'</span><span class="p">].</span><span class="n">data</span><span class="p">,</span>
+                                                           <span class="bp">self</span><span class="p">.</span><span class="n">bestindividual</span><span class="p">[</span><span class="s">'score'</span><span class="p">]))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">"  Min fitness of current pop: {}"</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">fits</span><span class="p">)))</span>
+</code></pre></div></div>
+
+
+
+</div>
+
+<div class="pagination">
+  
+    <a href="/wwb/2021-06-04/LayerNorm" class="left next">Prev</a>
+  
+  
+    <a href="/wwb/2021-04-01/%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84%E9%97%AE%E9%A2%98" class="right next">Next</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        &copy; <time datetime="2023-02-02 21:33:58 +0800">2023</time> 王文斌. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
+      </span>
+    </footer>
+  </body>
+</html>

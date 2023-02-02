@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>wwb个人主页</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/wwb/assets/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="/wwb/assets/css/fontawesome-all.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/wwb/assets/favicon.ico">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/wwb/">
+          <h2 class="nav-title">wwb个人主页</h2>
+        </a>
+        <ul>
+          <li><a href="/wwb/">About</a></li>
+          <li><a href="/wwb/portfolio/">Portfolio</a></li>
+        </ul>
+    </div>
+  </nav>
+
+    <main>
+      <div class="post">
+  <h2 class="post-title">Docker配置远程连接</h2>
+  <div class="post-line"></div>
+
+  <p>基于Docker18.06 配置ssh远程连接。</p>
+
+<h2 id="1-构建ubuntu">1. 构建Ubuntu</h2>
+
+<p>请见<a href="https://dreammr.github.io/docker/2021/09/12/Docker%E6%90%AD%E5%BB%BAdeeplearning%E7%8E%AF%E5%A2%83.html">搭建深度学习Ubuntu环境</a></p>
+
+<p>这里以镜像名：ssh_ubuntu2:v1 为例</p>
+
+<h2 id="2-安装ssh">2. 安装ssh</h2>
+
+<ul>
+  <li>
+    <p>进入ubuntu环境</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run -i -t ssh_ubuntu2:v1 /bin/bash
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>更新ubuntu仓库</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt-get update
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>安装sudo</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt-get install sudo
+# test
+sudo ls
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>安装vim</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install vim
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>安装ssh服务</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install ssh
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>修改PermitRootLogin参数</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /etc/ssh/sshd_config
+# 新加
+PermitRootLogin yes
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>修改root的密码</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>passwd
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="3重新更新镜像">3.重新更新镜像</h2>
+
+<ul>
+  <li>
+    <p>退出虚拟容器</p>
+  </li>
+  <li>
+    <p>commit 新镜像</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker commit [container_id] ssh_ubuntu:v1.3
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="4重新启动容器">4.重新启动容器</h2>
+
+<ul>
+  <li>
+    <p>后台启动容器、指定监听端口、绑定卷</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run --runtime=nvidia -it -v /data1/wwb/test2:/data -d -p 5002:22 ssh_ubuntu:v1.3 /bin/bash
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<h2 id="5-进入容器启动服务">5 进入容器启动服务</h2>
+
+<ul>
+  <li>
+    <p>查询容器id</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker ps
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>进入容器</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker exec -it [容器id] bash
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>启动ssh服务</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>service ssh start
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>设置开机自启</p>
+
+    <p>由于docker中无法使用systemctl，因此通过使用脚本进行修改</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 编写自启动脚本
+vim /root/startup_run.sh
+# startup_run.sh content
+service ssh start &gt;&gt;/root/startup_run.log
+</code></pre></div>    </div>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x /root/startup_run.sh
+</code></pre></div>    </div>
+
+    <p>将脚本加入到启动文件中</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>vim /root/.bashrc
+# 加入以下内容
+if [ -f /root/startup_run.sh ]; then
+      ./root/startup_run.sh
+fi
+</code></pre></div>    </div>
+
+    <p>退出容器，然后重新启动容器便可。</p>
+  </li>
+</ul>
+
+<h2 id="6-通过ssh远程连接">6 通过ssh远程连接</h2>
+
+<p>直接通过ip地址和映射的端口号进去即可访问。</p>
+
+
+
+</div>
+
+<div class="pagination">
+  
+  
+    <a href="/wwb/2022-04-19/Docker%E5%AF%BC%E5%87%BA%E9%95%9C%E5%83%8F%E5%92%8C%E5%AF%BC%E5%85%A5%E9%95%9C%E5%83%8F" class="right next">Next</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        &copy; <time datetime="2023-02-02 21:33:58 +0800">2023</time> 王文斌. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
+      </span>
+    </footer>
+  </body>
+</html>

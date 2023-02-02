@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>wwb个人主页</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/wwb/assets/css/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" type="text/css" href="/wwb/assets/css/fontawesome-all.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/wwb/assets/favicon.ico">
+
+  <!-- Google Analytics -->
+  
+
+</head>
+
+
+  <body>
+    <nav class="nav">
+      <div class="nav-container">
+        <a href="/wwb/">
+          <h2 class="nav-title">wwb个人主页</h2>
+        </a>
+        <ul>
+          <li><a href="/wwb/">About</a></li>
+          <li><a href="/wwb/portfolio/">Portfolio</a></li>
+        </ul>
+    </div>
+  </nav>
+
+    <main>
+      <div class="post">
+  <h2 class="post-title">Ubuntu18.04创建用户</h2>
+  <div class="post-line"></div>
+
+  <p>Ubuntu18.04 创建用户教程。</p>
+
+<h1 id="ubuntu1804-创建用户远程登录">Ubuntu18.04 创建用户远程登录</h1>
+
+<ol>
+  <li>
+    <p>创建用户及创建目录</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>useradd <span class="nt">-r</span> <span class="nt">-m</span> <span class="nt">-s</span> /bin/bash user_name
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>修改权限</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo chmod</span> +w /etc/sudoers  <span class="c">#修改对sudoers的权限，由于一开始是只读</span>
+<span class="nb">sudo </span>vim /etc/sudoers
+user_name <span class="nv">ALL</span><span class="o">=(</span>ALL:ALL<span class="o">)</span> ALL  <span class="c">#修改权限</span>
+<span class="nb">sudo chmod</span> <span class="nt">-w</span> /etc/sudoers    <span class="c">#删除对sudoers文件的修改权限</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>修改密码</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>passwd user_name
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>问题：如果出现.Xauthority文件不存在，</p>
+
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo chown </span>user_name:username .Xauthority
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>给定链接：</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>https://blog.csdn.net/lin_jianbin/article/details/39027375   <span class="c">#.Xauthority</span>
+https://ywnz.com/linuxjc/3406.html    <span class="c">#创建新用户教程</span>
+</code></pre></div></div>
+
+
+
+</div>
+
+<div class="pagination">
+  
+    <a href="/wwb/2020-11-03/3D-CNN" class="left next">Prev</a>
+  
+  
+    <a href="/wwb/2020-01-02/%E5%B9%BF%E4%B9%89%E6%8B%89%E6%A0%BC%E6%9C%97%E6%97%A5%E6%9E%81%E5%B0%8F%E6%9E%81%E5%A4%A7%E9%97%AE%E9%A2%98" class="right next">Next</a>
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+
+    <footer>
+      <span>
+        &copy; <time datetime="2023-02-02 21:33:58 +0800">2023</time> 王文斌. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
+      </span>
+    </footer>
+  </body>
+</html>
