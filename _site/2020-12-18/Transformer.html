@@ -8,14 +8,14 @@
   <title>wwb个人主页</title>
 
   <!-- CSS -->
-  <link rel="stylesheet" href="/wwb/assets/css/main.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
   
   <!-- Font Awesome -->
-  <link rel="stylesheet" type="text/css" href="/wwb/assets/css/fontawesome-all.min.css">
+  <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome-all.min.css">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="16x16" href="/wwb/assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon.ico">
 
   <!-- Google Analytics -->
   
@@ -26,12 +26,12 @@
   <body>
     <nav class="nav">
       <div class="nav-container">
-        <a href="/wwb/">
+        <a href="/">
           <h2 class="nav-title">wwb个人主页</h2>
         </a>
         <ul>
-          <li><a href="/wwb/">About</a></li>
-          <li><a href="/wwb/portfolio/">Portfolio</a></li>
+          <li><a href="/">About</a></li>
+          <li><a href="/portfolio/">Portfolio</a></li>
         </ul>
     </div>
   </nav>
@@ -47,7 +47,7 @@
 
 <p>​		在Transformer出现之前，处理序列数据通常采用RNN，但是RNN有一个问题就是不能进行并行计算，例如有4个词，必须先计算完前面3个词才能计算第四个词。</p>
 
-<p><img src="/wwb/assets/img/transformer/RNN.png" alt="RNN" /></p>
+<p><img src="/assets/img/transformer/RNN.png" alt="RNN" /></p>
 
 <p>​	其次，如果使用CNN代替RNN，那么由于句子当中的每个词都不是独立存在的，如果想要看到整个句子，那就需要加深卷积层。于是，就有了Transformer里面最核心的self-attention，它不像RNN不能并行化计算，同时，它不像CNN需要叠加很多层才能看到完整的句子。</p>
 
@@ -55,7 +55,7 @@
 
 <h2 id="self-attention">self-attention</h2>
 
-<p><img src="/wwb/assets/img/transformer/self-att1.png" alt="self-attention1" /></p>
+<p><img src="/assets/img/transformer/self-att1.png" alt="self-attention1" /></p>
 
 <p>其中\(W\)可以看成是神经网络提取特征的过程，将原始的输入向量\(x\)映射为\(a\).接着通过三个矩阵（其实可以解为全连接层）得到\(q\)、\(k\)、\(v\)，计算公式如下：</p>
 
@@ -68,7 +68,7 @@ v^i=W^va^i\]
 
 <p>接着，用得到的每个q去和每个k相乘,得到\(\alpha\)：</p>
 
-<p><img src="/wwb/assets/img/transformer/self-att2.png" alt="self-attention2" /></p>
+<p><img src="/assets/img/transformer/self-att2.png" alt="self-attention2" /></p>
 
 \[\alpha_{1,i}=q^1\cdot k^i/\sqrt{d}\ (d\ is \ the \ dim\ of\ q\ and\ k)\]
 
@@ -76,9 +76,9 @@ v^i=W^va^i\]
 
 <p>接着对每个得到的\(\alpha_{1,i}\)通过softmax得到[0,1]范围内的权重。在得到\(\hat{\alpha}_{1,i}\)后，与\(v^i\)进行矩阵运算，得到\(b^1\)。这一步我的理解是通过计算其他1~4对1的影响，来得到\(b^1\)。同理可以计算\(b^2,b^3,b^4\)。</p>
 
-<p><img src="/wwb/assets/img/transformer/self-att4.png" alt="self-attention3" /></p>
+<p><img src="/assets/img/transformer/self-att4.png" alt="self-attention3" /></p>
 
-<p><img src="/wwb/assets/img/transformer/self-att5.png" alt="self-attention3" /></p>
+<p><img src="/assets/img/transformer/self-att5.png" alt="self-attention3" /></p>
 
 <p>在计算的时候可以把分别计算q，k，v的参数矩阵W作为一个大的矩阵做矩阵乘法，这里将不再详细讲解怎么计算，可以在B站上查看李宏毅老师的深度学习系列课程。在self-attention的整个计算过程中都是可以并行计算的，不需要等到\(b^1\)计算完后再计算\(b^2\)，并且整个计算过程都没有用到卷积神经网络，都是在做矩阵乘法。实际上最后得到的\(\hat{\alpha}_{i,j}\)其实就是一个大的相关性矩阵，每一行代表j对i的影响。因此这个矩阵是可以得到全局信息的。</p>
 
@@ -86,19 +86,19 @@ v^i=W^va^i\]
 
 <p>上面的例子可以看成是一个1 heads的self-attention。下面以2heads为例说明什么是Multi-head Self-attention。</p>
 
-<p><img src="/wwb/assets/img/transformer/mul-head1.png" alt="self-attention3" /></p>
+<p><img src="/assets/img/transformer/mul-head1.png" alt="self-attention3" /></p>
 
 <p><img src="E:\DreamMr.github.io\site\my_web_site\assets\img\transformer\self-att6.png" style="zoom:67%;" /></p>
 
 <p>从上面的图可以看到，这里的q、k、v变成了两个，因为论文里说这么做是因为只用1head，那么可能self-attention只是关注其中一个方面的特征，为了让其学到更多的特征，因此用多个head。这里最终会得到两个\(b^i\),那么为了保持一致，会将这两个\(b^{i,1},b^{i,2}\)经过一个网络映射成一个\(b^i\)</p>
 
-<p><img src="/wwb/assets/img/transformer/mul-head3.png" alt="mul-head" /></p>
+<p><img src="/assets/img/transformer/mul-head3.png" alt="mul-head" /></p>
 
 <p>以上就是transformer中self-attention的计算细节。</p>
 
 <p>这里再介绍一个较为特殊的Masked Multi-Head Attention。因为之前在RNN中首先需要根据$a_1$来计算\(a_2\),计算\(a_2\)的时候还看不到\(a_3\)，但是使用Multi-Head Attention的时候是可以同时进行计算的，因此为了避免在计算$a_2$的时候看到后面的\(a_3,a_4,a_5......\)，于是在decoder的第一个Multi-Head Attention引入一个mask，用这个mask来遮住后面的数据。其实也就是一个下三角矩阵，与<strong>QK</strong>相乘（这里不是矩阵乘法了，对应位置相乘）</p>
 
-<p><img src="/wwb/assets/img/transformer/maskmulti-head1.png" alt="mask-mul-head" /></p>
+<p><img src="/assets/img/transformer/maskmulti-head1.png" alt="mask-mul-head" /></p>
 
 <p>网上一般在做这一步的时候使用torch.masked_fill(mask,value)，将mask中为1元素所在的索引在a中相同位置替换为value。</p>
 
@@ -135,7 +135,7 @@ PE(pos,2i+1)=cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})\]
 
 <h2 id="transformer架构">Transformer架构</h2>
 
-<p><img src="/wwb/assets/img/transformer/transformer.png" alt="transformer" /></p>
+<p><img src="/assets/img/transformer/transformer.png" alt="transformer" /></p>
 
 <p>Transformer由encoder和decoder组成。其中默认的encoder有6层，decoder也是6层。通常在decoder出来后还接一层全连接层和softmax用于分类。</p>
 
@@ -145,10 +145,10 @@ PE(pos,2i+1)=cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})\]
 
 <div class="pagination">
   
-    <a href="/wwb/2021-04-01/Pytorch-DataLoader%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95" class="left next">Prev</a>
+    <a href="/2021-04-01/Pytorch-DataLoader%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95" class="left next">Prev</a>
   
   
-    <a href="/wwb/2020-11-11/AI%E6%8A%A0%E5%9B%BE" class="right next">Next</a>
+    <a href="/2020-11-11/AI%E6%8A%A0%E5%9B%BE" class="right next">Next</a>
   
 
   <a href="#" class="top">Top</a>
@@ -158,7 +158,7 @@ PE(pos,2i+1)=cos(\frac{pos}{10000^{\frac{2i}{d_{model}}}})\]
 
     <footer>
       <span>
-        &copy; <time datetime="2023-02-02 21:33:58 +0800">2023</time> 王文斌. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
+        &copy; <time datetime="2023-02-03 00:12:03 +0800">2023</time> 王文斌. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
       </span>
     </footer>
   </body>
