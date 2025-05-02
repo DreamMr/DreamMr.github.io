@@ -1,14 +1,14 @@
 # Site settings
-title: wwb个人主页
+title: DreamMr Page
 baseurl: 
 url: "https://github.com/DreamMr"
 google_analytics: # Tracking ID, e.g. "UA-000000-01"
 
 # Author
 author:
-  name: 王文斌
-  desc: 
-  email: wangwenbin@cug.edu.cn
+  name: Wenbin Wang
+  desc: Ph.D. student at Wuhan University
+  email: wangwenbin97@whu.edu.cn
   selfie: assets/img/profile.jpg
 
 # social

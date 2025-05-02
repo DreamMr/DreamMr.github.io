@@ -2,7 +2,9 @@
 layout: post
 title: Transformer
 category: deeplearning
-author: 一个不懂数学的程序员
+author: 一个不懂数学的程序员, wwb
+type: aaaa
+info: bbbbb
 ---
 
 **Transformer**学习笔记
