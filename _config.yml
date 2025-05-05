@@ -9,12 +9,12 @@ author:
   name: Wenbin Wang
   desc: Ph.D. student at Wuhan University
   email: wangwenbin97@whu.edu.cn
-  selfie: assets/img/profile.jpg
+  selfie: assets/img/profile.png
 
 # social
 social:
   email: true
-  behance:
+  behance: 
   bitbucket:
   dribbble:
   flickr:
@@ -33,6 +33,7 @@ social:
   wordpress:
   youtube:
   default_txt: "Follow On"
+  google_scholar: https://scholar.google.com/citations?hl=zh-CN&user=DSq3RSYAAAAJ
 
 # Build settings
 markdown: kramdown
@@ -47,8 +48,8 @@ plugins:
   - jekyll-paginate
 
 # Permalinks
-permalink: /:year-:month-:day/:title
-paginate_path: "/portfolio/page:num/"
+permalink: /:title
+paginate_path: "/project/page:num/"
 paginate: 5
 exclude:
   - "Gemfile"

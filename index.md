@@ -3,9 +3,7 @@ layout: about
 ---
 
 # Short Bio
-<p>I am currently pursuing a Ph.D. degree in Artificial Intelligence from the School of Computer Science, Wuhan University. I have authored or co-authored over 10 papers at top conferences and international journals, including CVPR, NeurIPS, ICML, ACM MM, AAAI, Pattern Recognition and etc. </p>
-
-[Google Scholar](https://scholar.google.com/citations?hl=zh-CN&user=DSq3RSYAAAAJ)
+<p>I am currently pursuing a Ph.D. degree in Artificial Intelligence from the School of Computer Science, Wuhan University. I have authored or co-authored over 10 papers at top conferences and international journals, including <b>CVPR, NeurIPS, ICML, ACM MM, AAAI, Pattern Recognition</b> and etc. </p>
 
 # Research Interests
 - **Multimodal Large Language Models**
@@ -30,7 +28,7 @@ layout: about
 
 # News
 
-- [05/2025] One paper has been accepted by ICML 2025 (**Spotlight**). Cheers! 🥳
+- [05/2025] Our paper *Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG* was accepted as a Spotlight at ICML 2025! 🎉
 - [12/2024] One regular paper has been accepted by AAAI 2025! 🥳
 - [10/2024] One paper has been accepted by NeurIPS 2024! 🥳
 - [07/2024] One paper has been accepted by ACM MM 2024! 🥳

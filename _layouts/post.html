@@ -1,16 +1,30 @@
----
-layout: base 
----
+<!-- ---
+layout: post_base 
+--- -->
 
-<div class="post">
-  <h2 class="post-title">{{ page.title }}</h2>
-  <div class="post-line"></div>
+  
+  <!-- 引入图标库 -->
+ 
+
+  <!-- <h2 class="post-title">{{ page.title }}</h2>
+  <h2 style="text-align: center; font-size: 23px">{{ page.author }}</h2>
+  <div style="display: flex; justify-content: center; gap: 30px; margin: 40px 0">
+    <a href={{ page.paper }} class="link-btn">
+      <i class="fas fa-file-alt"></i>
+      Paper
+    </a>
+    <a href={{ page.github }} class="link-btn">
+      <i class="fas fa-code"></i>
+      Github
+    </a>
+  </div>
+   -->
+  <!-- <div class="post-line"></div> -->
 
   {{ content }}
 
-</div>
 
-<div class="pagination">
+<!-- <div class="pagination">
   {% if page.next.url %}
     <a href="{{ page.next.url | prepend: site.baseurl }}" class="left next">Prev</a>
   {% endif %}
@@ -18,5 +32,4 @@ layout: base
     <a href="{{ page.previous.url | prepend: site.baseurl }}" class="right next">Next</a>
   {% endif %}
 
-  <a href="#" class="top">Top</a>
-</div>
+  <a href="#" class="top">Top</a> -->

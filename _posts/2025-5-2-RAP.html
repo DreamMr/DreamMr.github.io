@@ -1,0 +1,335 @@
+---
+layout: post
+title: "Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG"
+category: algorithm
+author: "Wenbin Wang, Yongcheng Jing, Liang Ding, Yingjie Wang, Li Shen, Yong Luo, Bo Du, Dacheng Tao"
+excerpt_separator: 。
+github: https://github.com/DreamMr/RAP
+paper: https://arxiv.org/abs/2503.01222
+---
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="DESCRIPTION META TAG">
+  <meta property="og:title" content="SOCIAL MEDIA TITLE TAG"/>
+  <meta property="og:description" content="SOCIAL MEDIA DESCRIPTION TAG TAG"/>
+  <meta property="og:url" content="URL OF THE WEBSITE"/>
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X630-->
+  <meta property="og:image" content="static/image/your_banner_image.png" />
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+
+
+  <meta name="twitter:title" content="TWITTER BANNER TITLE META TAG">
+  <meta name="twitter:description" content="TWITTER BANNER DESCRIPTION META TAG">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimenssions are 1200X600-->
+  <meta name="twitter:image" content="static/images/your_twitter_banner_image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by-->
+  <meta name="keywords" content="KEYWORDS SHOULD BE PLACED HERE">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  <title>RAP Project</title>
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+  rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/static/css/bulma.min.css">
+  <link rel="stylesheet" href="../assets/static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="../assets/static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="../assets/static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="../assets/static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
+  <script defer src="../assets/static/js/fontawesome.all.min.js"></script>
+  <script src="../assets/static/js/bulma-carousel.min.js"></script>
+  <script src="../assets/static/js/bulma-slider.min.js"></script>
+  <script src="../assets/static/js/index.js"></script>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-2 publication-title"><img src="../assets/img/RAP/logo.jpg" style="width: 4%; height: auto ;">Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG</h1>
+            <div class="is-size-5 publication-authors">
+              <!-- Paper authors -->
+              <span class="author-block">
+                Wenbin Wang<sup>1</sup>,
+              </span>
+                <span class="author-block">
+                  Yongcheng Jing<sup>2</sup>,
+                </span>
+                  <span class="author-block">
+                    Liang Ding<sup>3</sup>,
+                  </span>
+                  <span class="author-block">
+                    Yingjie Wang<sup>2</sup>,
+                  </span>
+                  <span class="author-block">
+                    Li Shen<sup>4</sup>,
+                  </span>
+                  <span class="author-block">
+                    Yong Luo<sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    Bo Du<sup>1</sup>,
+                  </span>
+                  <span class="author-block">
+                    Dacheng Tao<sup>2</sup>
+                  </span>
+                  </div>
+
+                  <div class="is-size-5 publication-authors">
+                    <span class="author-block"><sup>1</sup>Wuhan University, <sup>2</sup>Nanyang Technological University, <sup>3</sup>The University of Sydney, <sup>4</sup>Sun Yat-Sen University</span>
+                    <!-- <span class="eql-cntrb"><small><br><sup>*</sup>Corresponding author</small></span> -->
+                  </div>
+
+                  <div class="column has-text-centered">
+                    <div class="publication-links">
+                         <!-- Arxiv PDF link -->
+                      <span class="link-block">
+                        <a href="https://arxiv.org/abs/2503.01222" target="_blank"
+                        class="external-link button is-normal is-rounded is-dark">
+                        <span class="icon">
+                          <i class="fas fa-file-pdf"></i>
+                        </span>
+                        <span>Paper</span>
+                      </a>
+                    </span>
+
+
+                  <!-- Github link -->
+                  <span class="link-block">
+                    <a href="https://github.com/DreamMr/RAP" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+
+                <!-- ArXiv abstract Link -->
+                <!-- <span class="link-block">
+                  <a href="https://arxiv.org/abs/2411.16044" target="_blank"
+                  class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+
+              <span class="link-block">
+                <a href="https://huggingface.co/datasets/omlab/zoom_eye_data" target="_blank"
+                class="external-link button is-normal is-rounded is-dark">
+                <span class="icon">
+                  🤗
+                </span>
+                <span>Data</span>
+              </a>
+            </span> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      
+      <div class="hero-body">
+        <div style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        ">
+          <video poster="" id="tree" autoplay controls muted loop height="100%" style="width: 60%; height: auto; align-items: center;">
+            <!-- Your video here -->
+            <source src="../assets/img/RAP/project_dynamic.mp4" type="video/mp4">
+          </video>
+        </div>
+        <h2 class="subtitle has-text-centered">
+          This video shows the process of our <b><em>RAP</em></b>, which locates key areas in high-resolution image.  
+        </h2>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End teaser video -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            High-resolution (HR) image perception remains a key challenge in multimodal large language models (MLLMs). To overcome the limitations of existing methods, this paper shifts away from prior dedicated heuristic approaches and revisits the most fundamental idea to HR perception by enhancing the long-context capability of MLLMs, driven by recent advances in long-context techniques like retrieval-augmented generation (RAG) for general LLMs. Towards this end, this paper presents the first study exploring the use of RAG to address HR perception challenges. Specifically, we propose <b><em>Retrieval-Augmented Perception (RAP)</em></b>, a training-free framework that retrieves and fuses relevant image crops while preserving spatial context using the proposed <em>Spatial-Awareness Layout</em>. To accommodate different tasks, the proposed <em>Retrieved-Exploration Search (RE-Search)</em> dynamically selects the optimal number of crops based on model confidence and retrieval scores. Experimental results on HR benchmarks demonstrate the significant effectiveness of <b><em>RAP</em></b>, with LLaVA-v1.5-13B achieving a 43% improvement on V* <b>Bench</b> and 19% on <b><em>HR-Bench</em></b>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
+
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-3">Introduction</h2>
+    </div>
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/intro_1.png" alt="MY ALT TEXT" style="display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+          Currently, MLLMs process images by converting them into patches and then into visual tokens, which are input into the LLM. However, when processing 8K high-resolution (HR) images using ViT-L/14, this results in ~300K visual tokens. This raises the question of whether the key to HR perception lies in enhancing the long-context capacity of MLLMs. In particular, retrieval-augmented generation (RAG) has proven highly effective in recent long-context LLMs, by retrieving crucial fragments and reducing the impact of irrelevant information. Motivated by this, this paper poses a largely overlooked question: <b><em>Is it possible to directly enhance the long-context capability of MLLMs using RAG, as in general LLMs, to overcome the limitations of existing HR perception methods?</em></b>
+        </h2>
+      </div>
+      <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/motivation.png" alt="MY ALT TEXT" style="width: 65%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+          We study this question by considering two key aspects: the layout of retrieved image crops and the impact of the number of retrieved image crops on performance. This leads to the following specific challenges: <b><em>1) How should the retrieved image crops be organised? 2) How does the number of retrieved image crops influence the final performance? And 3) How can RAG systems be designed to enhance MLLM perception of HR images?</em></b>
+        </h2>
+      </div>
+  </div>
+</div>
+</div>
+</section>
+<!-- End image carousel -->
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-3">Method</h2>
+    </div>
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/spatial_layout.png" alt="MY ALT TEXT" style="width: 50%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+          To explore the impact of the layout of retrieved image crops, we compare three layout strategies: 1) Sort according to the retrieval scores in descending order; 2) After selectiong the top <em>K</em> image crops, arrange them in the order in which the image crops apper; 3) Maintain the relative positional relationships of the image crops.
+          <br><br>
+          <b>Insight: We find that maintaining the relative positional relationships between retrieved image crops is essential, particlularly for tasks requiring spatial awareness.</b>
+        </h2>
+      </div>
+      <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/k_analysis.jpg" alt="MY ALT TEXT" style="width: 50%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+          We analyze the relationship between performance and the number of the retrieved image crops, using the LLaVA-v1.5 and LLaVA-v1.6 on HR-Bench.
+          <br><br>
+          <b>Insight: Different types of tasks require different numbers of retrieved image crops <em>K</em>. For <b><em>FSP</em></b> tasks, smaller <em>K</em> improves results, but larger <em>K</em> reduces performance by increasing resolution. Conversely, for <b><em>FCP</em></b> tasks, larger <em>K</em> preserves visual information and outperformas smaller <em>K</em>.
+          </b>
+        </h2>
+      </div>
+      <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/method.jpg" alt="MY ALT TEXT" style="width: 70%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+          Driven by the aforementioned insights, we propsoe <b><em>Retrieval-Augmented Perception (RAP)</em></b>. We design a <em>Spatial-Awareness Layout</em> to maintain the relative positional relationships between the image cropps. To adaptively select <em>K</em>, we propose <em>Retrieved-Exploration Search (RE-Search)</em>, which determines <em>K</em> based on the model's confidence and the similarity of image crops and query.
+        </h2>
+      </div>
+  </div>
+</div>
+</div>
+</section>
+<!-- End image carousel -->
+
+
+<!-- Image carousel -->
+<section class="hero is-small">
+  <div class="hero-body">
+    <div class="columns is-centered has-text-centered">
+      <h2 class="title is-3">Experimental Results</h2>
+    </div>
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+       <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/result1.jpg" alt="MY ALT TEXT" style="width: 75%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+            We evaluate our <b><em>RAP</em></b> on two HR benchmarks: V* Bench and HR-Bench. Compared to the baseline MLLM, the performance of nearly all models significantly improved with our <b><em>RAP</em></b>, demonstrating the model-agnostic trait of <b><em>RAP</em></b>.
+        </h2>
+      </div>
+      <div class="item">
+        <!-- Your image here -->
+        <img src="../assets/img/RAP/ablation.jpg" alt="MY ALT TEXT" style="width: 45%; height: auto ; display: block; margin: 0 auto;"/>
+        <h2 class="subtitle justified-text">
+            To better understand the role of each module in our <b><em>RAP</em></b>, we conduct ablation study on <b><em>HR-Bench 8K</em></b> using LLaVA-v1.5 7B. We first use VisRAG to retrieve key image crops, replacing the original HR images, resulting in an average improevement of 4.5% accuracy compared to the baseline. However, we find a significant improvement in the <b><em>FSP</em></b> task, but there is a noticeable performance drop in the <b><em>FCP</em></b> task. By incorporating the <em>Spatial-Awareness Layout</em>, the relative positional relationships between image crops are preserved, leading to an improvement in accuracy on the <b><em>FCP</em></b> task compared to <b><em>+VisRAG</em></b>. Finally, we utilize <em>RE-Search</em> to determine the optimal <em>K</em> for different samples, resulting in significant improvements in both the <b><em>FSP</em></b> and <b><em>FCP</em></b> tasks, with an average improvement of 21.7% accuracy compared to the baseline.
+        </h2>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</section>
+<!-- End image carousel -->
+
+
+<!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{rap,
+        title={Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG}, 
+        author={Wenbin Wang and Yongcheng Jing and Liang Ding and Yingjie Wang and Li Shen and Yong Luo and Bo Du and Dacheng Tao},
+        year={2025},
+        journal={arXiv preprint},
+        url={https://arxiv.org/abs/2503.01222}, 
+  }</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Statcounter tracking code -->
+  
+<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+    <!-- End of Statcounter Code -->
+
+  </body>
+  </html>
