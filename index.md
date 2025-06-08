@@ -28,7 +28,7 @@ layout: about
 
 # News
 
-- [05/2025] Our paper *Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG* was accepted as a Spotlight at ICML 2025! 🎉
+- [06/2025] Our paper *Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG* was accepted as an Oral (top 1%) at ICML 2025! 🎉
 - [12/2024] One regular paper has been accepted by AAAI 2025! 🥳
 - [10/2024] One paper has been accepted by NeurIPS 2024! 🥳
 - [07/2024] One paper has been accepted by ACM MM 2024! 🥳
