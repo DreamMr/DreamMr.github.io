@@ -5,21 +5,37 @@ layout: base
 <div class="about">
   <div class="profile">
     <img class="selfie" alt="{{ site.author.name }}" src="{{ site.author.selfie }}" />
-    <div class="info">
+
+    <div class="profile-details">
       <div class="title">{{ site.author.name }}</div>
       <div class="description">{{ site.author.desc }}</div>
+
+      <div class="profile-links">
+        {% if site.social.github %}
+        <div class="profile-link">
+          <span>GitHub:</span>
+          <a href="https://github.com/{{ site.social.github }}">github.com/{{ site.social.github }}</a>
+        </div>
+        {% endif %}
+
+        {% if site.social.google_scholar %}
+        <div class="profile-link">
+          <span>Google Scholar:</span>
+          <a href="{{ site.social.google_scholar }}">scholar.google.com/citations</a>
+        </div>
+        {% endif %}
+
+        {% if site.social.email %}
+        <div class="profile-link">
+          <span>Email:</span>
+          <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
+        </div>
+        {% endif %}
+      </div>
     </div>
   </div>
 
   <div class="content">
     {{ content }}
-    </br>
-    <div class="social-layer">
-      <div class="social-icons">
-        <ul>
-          {% include icons.html %}
-        </ul>
-      </div>
-    </div>
   </div>
 </div>

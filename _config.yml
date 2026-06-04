@@ -1,12 +1,12 @@
 # Site settings
-title: DreamMr Page
+title: Bill Wang
 baseurl: 
 url: "https://github.com/DreamMr"
 google_analytics: # Tracking ID, e.g. "UA-000000-01"
 
 # Author
 author:
-  name: Wenbin Wang
+  name: Bill Wang (王文斌)
   desc: Ph.D. student at Wuhan University
   email: wangwenbin97@whu.edu.cn
   selfie: assets/img/profile.jpg

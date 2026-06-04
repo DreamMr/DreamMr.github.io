@@ -5,11 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>DreamMr Page</title>
+  <title>Bill Wang</title>
 
   <!-- CSS -->
   <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
   
   <!-- Font Awesome -->
   <link rel="stylesheet" type="text/css" href="/assets/css/fontawesome-all.min.css">
@@ -27,7 +28,7 @@
     <nav class="nav">
       <div class="nav-container">
         <a href="/">
-          <h2 class="nav-title">DreamMr Page</h2>
+          <h2 class="nav-title">Bill Wang</h2>
         </a>
         <ul>
           <li><a href="/">About</a></li>
@@ -40,25 +41,59 @@
     <main>
       <div class="about">
   <div class="profile">
-    <img class="selfie" alt="Wenbin Wang" src="assets/img/profile.png" />
-    <div class="info">
-      <div class="title">Wenbin Wang</div>
+    <img class="selfie" alt="Bill Wang (王文斌)" src="assets/img/profile.jpg" />
+
+    <div class="profile-details">
+      <div class="title">Bill Wang (王文斌)</div>
       <div class="description">Ph.D. student at Wuhan University</div>
+
+      <div class="profile-links">
+        
+        <div class="profile-link">
+          <span>GitHub:</span>
+          <a href="https://github.com/DreamMr">github.com/DreamMr</a>
+        </div>
+        
+
+        
+        <div class="profile-link">
+          <span>Google Scholar:</span>
+          <a href="https://scholar.google.com/citations?hl=zh-CN&user=DSq3RSYAAAAJ">scholar.google.com/citations</a>
+        </div>
+        
+
+        
+        <div class="profile-link">
+          <span>Email:</span>
+          <a href="mailto:wangwenbin97@whu.edu.cn">wangwenbin97@whu.edu.cn</a>
+        </div>
+        
+      </div>
     </div>
   </div>
 
   <div class="content">
-    <h1 id="short-bio">Short Bio</h1>
-<p>I am currently pursuing a Ph.D. degree in Artificial Intelligence from the School of Computer Science, Wuhan University. I have authored or co-authored over 10 papers at top conferences and international journals, including <b>CVPR, NeurIPS, ICML, ACM MM, AAAI, Pattern Recognition</b> and etc. </p>
+    <h1 id="about-me">About Me</h1>
+
+<p>Hello! I am a Ph.D. student in Artificial Intelligence at the School of Computer Science, Wuhan University. My current research focuses on image perception and reasoning for Multimodal Large Language Models.</p>
+
+<p>I am interested in building AI systems that can perceive the visual world more precisely and reason about it more reliably. Despite recent progress in multimodal large language models (MLLMs), current AI systems still struggle with fine-grained visual details, high-resolution images, spatial reasoning in visual evidence. I believe that advancing visual intelligence requires more than recognizing objects or generating descriptions; AI systems should be able to identify critical visual evidence, understand complex visual structures, and reason over what they see.</p>
+
+<p>To this end, my recent work explores spatial reasoning, high-resolution image perception, and AIGC detection. I have authored or co-authored more than ten papers in leading conferences and journals, including <strong>ICML, NeurIPS, CVPR, ACM MM, AAAI, Pattern Recognition</strong>. Previously, I interned at Tencent YouTu Lab and Hikvision.</p>
+
+<p class="short-bio">My long-term goal is to develop AI systems with stronger, more reliable, and more efficient visual perception and reasoning capabilities.</p>
 
 <h1 id="research-interests">Research Interests</h1>
-<ul>
+
+<ul class="research-interests">
   <li>
     <p><strong>Multimodal Large Language Models</strong></p>
 
     <p>8K image benchmark - <a href="https://ojs.aaai.org/index.php/AAAI/article/view/32852">HR-Bench (<em>AAAI 2025</em>)</a>.</p>
 
     <p>High-resolution image perception methods - <a href="https://ojs.aaai.org/index.php/AAAI/article/view/32852">$DC^2$ (<em>AAAI 2025</em>)</a> &amp; <a href="https://arxiv.org/abs/2503.01222"><strong><em>RAP</em></strong> (ICML 2025)</a>.</p>
+
+    <p>AIGC Detection - <a href="https://arxiv.org/abs/2602.21716">TranX-Adapter (<em>ICML 2026</em>)</a></p>
   </li>
   <li>
     <p><strong>Multimodal Sentiment Analysis</strong></p>
@@ -79,9 +114,12 @@
 </ul>
 
 <h1 id="news">News</h1>
-
-<ul>
-  <li>[05/2025] Our paper <em>Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG</em> was accepted as a Spotlight at ICML 2025! 🎉</li>
+<ul class="news-list">
+  <li>[05/2026] One paper has been accepted by ICML 2026! 🥳</li>
+  <li>[12/2025] I was awarded the National Scholarship! 🎉</li>
+  <li>[11/2025] Our HR-Bench was selected in the Qwen3-VL technical report for evaluating the “Perception with Tool” capability.🎉</li>
+  <li>[07/2025] I was awarded the China Scholarship Council (CSC) scholarship to visit Singapore Management University as a Visiting Ph.D. Student, supervised by Prof. <a href="https://panzhous.github.io/">Pan Zhou</a>. 🎉</li>
+  <li>[06/2025] Our paper <em>Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG</em> was accepted as an Oral (top 1%) at ICML 2025! 🎉</li>
   <li>[12/2024] One regular paper has been accepted by AAAI 2025! 🥳</li>
   <li>[10/2024] One paper has been accepted by NeurIPS 2024! 🥳</li>
   <li>[07/2024] One paper has been accepted by ACM MM 2024! 🥳</li>
@@ -91,7 +129,14 @@
 
 <h1 id="education">Education</h1>
 
-<ul>
+<ul class="education-list">
+  <li>
+    <p><strong>Singapore Management University</strong> October 2025 – Present</p>
+
+    <p>Visiting Ph.D. Student in School of Computing and Information Systems, Singapore.</p>
+
+    <p>Supervised by Pan Zhou.</p>
+  </li>
   <li>
     <p><strong>Wuhan University</strong>, September 2023 – Present</p>
 
@@ -113,99 +158,18 @@
   </li>
 </ul>
 
-<p><br /></p>
-
 <h1 id="honors--awards">Honors &amp; Awards</h1>
 
 <ul>
-  <li>2020-2021 First-class Academic Scholarship for Graduate Students</li>
-  <li>2021 The 4-th ZhongQing Cup Mathematical Modeling Contest, Special Prize</li>
-  <li>2018 Principal Scholarship</li>
-  <li>2018 School Outstanding Student in China University of Geosciences, Wuhan</li>
-  <li>2018 The 9-th LanQiao Cup Programming Competition, Third Prize, China</li>
-  <li>2018 The 9-th LanQiao Cup Programming Competition, First Prize, Hubei Province</li>
+  <li>2025 National Scholarship.</li>
+  <li>2020-2021 First-class Academic Scholarship for Graduate Students.</li>
+  <li>2021 The 4-th ZhongQing Cup Mathematical Modeling Contest, Special Prize.</li>
+  <li>2018 Principal Scholarship.</li>
+  <li>2018 School Outstanding Student in China University of Geosciences, Wuhan.</li>
+  <li>2018 The 9-th LanQiao Cup Programming Competition, Third Prize, China.</li>
+  <li>2018 The 9-th LanQiao Cup Programming Competition, First Prize, Hubei Province.</li>
 </ul>
 
-    </br>
-    <div class="social-layer">
-      <div class="social-icons">
-        <ul>
-          
-<li>
-  <a href="mailto:wangwenbin97@whu.edu.cn" title="email">
-    <span class="fa-stack fa-lg">
-      <i class="fa fa-circle fa-stack-2x"></i>
-      <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
-    </span>
-  </a>
-</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://github.com/DreamMr" title="Follow On GitHub">
-    <span class="fa-stack fa-lg">
-      <i class="fa fa-circle fa-stack-2x"></i>
-      <i class="fab fa-github fa-stack-1x fa-inverse"></i>
-    </span>
-  </a>
-</li>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<li>
-  <a href="https://scholar.google.com/citations?hl=zh-CN&user=DSq3RSYAAAAJ" title="Follow On Google Scholar">
-    <span class="fa-stack fa-lg">
-      <i class="fa fa-circle fa-stack-2x"></i>
-      <i class="fab fa-google fa-stack-1x fa-inverse"></i>
-    </span>
-  </a>
-</li>
-
-
-        </ul>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -214,7 +178,7 @@
 
     <footer>
       <span>
-        &copy; <time datetime="2025-05-05 14:17:03 +0800">2025</time> Wenbin Wang. <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
+        &copy; <time datetime="2026-06-04 17:59:40 +0800">2026</time> Bill Wang (王文斌). <a href="https://github.com/kssim/about-portfolio/">A.P</a> theme by kssim.
       </span>
     </footer>
   </body>

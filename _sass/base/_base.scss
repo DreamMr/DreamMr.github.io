@@ -47,6 +47,17 @@ ul {
   padding: 0.1rem 0.2rem 0.2rem 0.7rem;
 }
 
+main {
+  p {
+    line-height: 1.8;
+    text-align: justify;
+  }
+
+  li {
+    text-align: justify;
+  }
+}
+
 a {
   color: #999;
   text-decoration: none;
