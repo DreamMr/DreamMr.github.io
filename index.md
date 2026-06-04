@@ -42,12 +42,12 @@ To this end, my recent work explores *spatial reasoning* (coming soon), *high-re
 - [05/2026] One paper has been accepted by ICML 2026! 🥳
 - [12/2025] I was awarded the National Scholarship! 🎉
 - [11/2025] Our HR-Bench was selected in the Qwen3-VL technical report for evaluating the "Perception with Tool" capability.🎉
+- [08/2025] One paper has been accepted by EMNLP 2025! 🎉
 - [07/2025] I was awarded the China Scholarship Council (CSC) scholarship to visit Singapore Management University as a Visiting Ph.D. Student, supervised by Prof. [Pan Zhou](https://panzhous.github.io/). 🎉
 - [06/2025] Our paper *Retrieval-Augmented Perception: High-Resolution Image Perception Meets Visual RAG* was accepted as an Oral (top 1%) at ICML 2025! 🎉
 - [12/2024] One regular paper has been accepted by AAAI 2025! 🥳
 - [10/2024] One paper has been accepted by NeurIPS 2024! 🥳
 - [07/2024] One paper has been accepted by ACM MM 2024! 🥳
-- [02/2023] One paper has been accepted by Pattern Recognition! 🥳
 - [02/2023] One paper has been accepted by CVPR 2023! 🥳
 {: .news-list}
 
@@ -86,3 +86,4 @@ To this end, my recent work explores *spatial reasoning* (coming soon), *high-re
 - 2018 School Outstanding Student in China University of Geosciences, Wuhan.
 - 2018 The 9-th LanQiao Cup Programming Competition, Third Prize, China.
 - 2018 The 9-th LanQiao Cup Programming Competition, First Prize, Hubei Province.
+{: .honors-list}
