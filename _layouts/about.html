@@ -18,17 +18,17 @@ layout: base
         </div>
         {% endif %}
 
-        {% if site.social.google_scholar %}
-        <div class="profile-link">
-          <span>Google Scholar:</span>
-          <a href="{{ site.social.google_scholar }}">scholar.google.com/citations</a>
-        </div>
-        {% endif %}
-
         {% if site.social.email %}
         <div class="profile-link">
           <span>Email:</span>
           <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
+        </div>
+        {% endif %}
+
+        {% if site.social.google_scholar %}
+        <div class="profile-link">
+          <span>Google Scholar:</span>
+          <a href="{{ site.social.google_scholar }}">scholar.google.com/citations</a>
         </div>
         {% endif %}
       </div>
