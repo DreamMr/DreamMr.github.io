@@ -2,18 +2,18 @@
 layout: about 
 ---
 
-# About Me
+# 👋 About Me
 
 Hello! I am a Ph.D. student in Artificial Intelligence at the School of Computer Science, Wuhan University. My current research focuses on image perception and reasoning for Multimodal Large Language Models.
 
 I am interested in building AI systems that can perceive the visual world more precisely and reason about it more reliably. Despite recent progress in multimodal large language models (MLLMs), current AI systems still struggle with fine-grained visual details, high-resolution images, spatial reasoning in visual evidence. I believe that advancing visual intelligence requires more than recognizing objects or generating descriptions; AI systems should be able to identify critical visual evidence, understand complex visual structures, and reason over what they see.
 
-To this end, my recent work explores spatial reasoning, high-resolution image perception, and AIGC detection. I have authored or co-authored more than ten papers in leading conferences and journals, including **ICML, NeurIPS, CVPR, ACM MM, AAAI, Pattern Recognition**. Previously, I interned at Tencent YouTu Lab and Hikvision.
+To this end, my recent work explores *spatial reasoning* (coming soon), *high-resolution image perception* ([RAP](https://arxiv.org/abs/2503.01222) and [HR-Bench](https://ojs.aaai.org/index.php/AAAI/article/view/32852)), and [*AIGC detection*](https://arxiv.org/abs/2602.21716). I have authored or co-authored more than ten papers in leading conferences and journals, including **ICML, NeurIPS, CVPR, ACM MM, AAAI, Pattern Recognition**. Previously, I interned at Tencent YouTu Lab and Hikvision.
 
-My long-term goal is to develop AI systems with stronger, more reliable, and more efficient visual perception and reasoning capabilities.
+***My long-term goal is to develop AI systems with stronger, more reliable, and more efficient visual perception and reasoning capabilities.***
 {: .short-bio}
 
-# Research Interests
+# 🌟 Research Interests
 
 - **Multimodal Large Language Models**
   
@@ -38,7 +38,7 @@ My long-term goal is to develop AI systems with stronger, more reliable, and mor
   Pose-disentangled contrastive learning - [PCL (*CVPR 2023*)](https://openaccess.thecvf.com/content/CVPR2023/html/Liu_Pose-Disentangled_Contrastive_Learning_for_Self-Supervised_Facial_Representation_CVPR_2023_paper.html).
 {: .research-interests}
 
-# News
+# 📧 News
 - [05/2026] One paper has been accepted by ICML 2026! 🥳
 - [12/2025] I was awarded the National Scholarship! 🎉
 - [11/2025] Our HR-Bench was selected in the Qwen3-VL technical report for evaluating the "Perception with Tool" capability.🎉
@@ -52,7 +52,7 @@ My long-term goal is to develop AI systems with stronger, more reliable, and mor
 {: .news-list}
 
 
-# Education
+# 📗 Education
 
 - **Singapore Management University** October 2025 -- Present
 
@@ -77,7 +77,7 @@ My long-term goal is to develop AI systems with stronger, more reliable, and mor
   Bachelor, Wuhan, China.
 {: .education-list}
 
-# Honors & Awards
+# 🏆 Honors & Awards
 
 - 2025 National Scholarship.
 - 2020-2021 First-class Academic Scholarship for Graduate Students.
