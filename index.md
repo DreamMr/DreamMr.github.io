@@ -39,6 +39,7 @@ To this end, my recent work explores *spatial reasoning* (coming soon), *high-re
 {: .research-interests}
 
 # 📧 News
+- [06/2026] One paper has been accepted by ECCV 2026! Congratulations to my collaborators! 🥳
 - [05/2026] One paper has been accepted by ICML 2026! 🥳
 - [12/2025] I was awarded the National Scholarship! 🎉
 - [11/2025] Our HR-Bench was selected in the Qwen3-VL technical report for evaluating the "Perception with Tool" capability.🎉
@@ -48,7 +49,6 @@ To this end, my recent work explores *spatial reasoning* (coming soon), *high-re
 - [12/2024] One regular paper has been accepted by AAAI 2025! 🥳
 - [10/2024] One paper has been accepted by NeurIPS 2024! 🥳
 - [07/2024] One paper has been accepted by ACM MM 2024! 🥳
-- [02/2023] One paper has been accepted by CVPR 2023! 🥳
 {: .news-list}
 
 
